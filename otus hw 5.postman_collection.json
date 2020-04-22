@@ -1,0 +1,259 @@
+{
+	"info": {
+		"_postman_id": "c9429cbf-3b26-4911-947f-78c13c56f2f5",
+		"name": "otus hw 5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "507ba30c-4e5e-4d14-8e93-cccc299d9ded",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.expect(responseCode.code).to.eql(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"",
+							"pm.test(\"Check saved values\", function () {",
+							"    pm.expect(jsonData.username).to.eql(\"snifer\");",
+							"    pm.expect(jsonData.firstName).to.eql(\"Vadim\");",
+							"    pm.expect(jsonData.lastName).to.eql(\"Vafin\");",
+							"    pm.expect(jsonData.email).to.eql(\"vafinvr@ya.ru\");",
+							"    pm.expect(jsonData.phone).to.eql(\"secret\");",
+							"});",
+							"",
+							"",
+							"pm.collectionVariables.set(\"userId\", jsonData.id)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Host",
+						"value": "arch.homework",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"snifer\",\n    \"firstName\": \"Vadim\",\n    \"lastName\": \"Vafin\",\n    \"email\": \"vafinvr@ya.ru\",\n    \"phone\": \"secret\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serverAddr}}/otusapp/user",
+					"protocol": "http",
+					"host": [
+						"{{serverAddr}}"
+					],
+					"path": [
+						"otusapp",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3c2af9a9-1449-4b2a-8aad-74620affbbfe",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.expect(responseCode.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Check read values\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.username).to.eql(\"snifer\");",
+							"    pm.expect(jsonData.firstName).to.eql(\"Vadim\");",
+							"    pm.expect(jsonData.lastName).to.eql(\"Vafin\");",
+							"    pm.expect(jsonData.email).to.eql(\"vafinvr@ya.ru\");",
+							"    pm.expect(jsonData.phone).to.eql(\"secret\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Host",
+						"value": "arch.homework",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{serverAddr}}/otusapp/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{serverAddr}}"
+					],
+					"path": [
+						"otusapp",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "097a5328-753f-4b39-89b3-6cc007841bc2",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.expect(responseCode.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Check update values\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.username).to.eql(\"snifer1\");",
+							"    pm.expect(jsonData.firstName).to.eql(\"Vadim1\");",
+							"    pm.expect(jsonData.lastName).to.eql(\"Vafin1\");",
+							"    pm.expect(jsonData.email).to.eql(\"vafinvr@ya.ru1\");",
+							"    pm.expect(jsonData.phone).to.eql(\"secret1\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Host",
+						"value": "arch.homework",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"snifer1\",\n    \"firstName\": \"Vadim1\",\n    \"lastName\": \"Vafin1\",\n    \"email\": \"vafinvr@ya.ru1\",\n    \"phone\": \"secret1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serverAddr}}/otusapp/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{serverAddr}}"
+					],
+					"path": [
+						"otusapp",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb008c30-97b9-4253-b254-aacf63562ca3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.expect(responseCode.code).to.eql(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Host",
+						"value": "arch.homework",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{serverAddr}}/otusapp/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{serverAddr}}"
+					],
+					"path": [
+						"otusapp",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "71105e4b-9a51-4474-8322-6c575e97d535",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "369712c5-8968-49cc-8487-e064c741ff28",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d3c95506-b36d-4432-9db0-d9c37ac9121a",
+			"key": "serverAddr",
+			"value": "172.17.0.2",
+			"type": "string"
+		},
+		{
+			"id": "81932437-9e63-4e96-913c-fe2976ab37a0",
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
