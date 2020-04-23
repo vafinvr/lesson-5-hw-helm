@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "initdb-job"
+  labels:
+    app.kubernetes.io/version: v1
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "initdb-job"
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: check-db-ready
+          image: postgres:latest
+          env:
+            - name: POSTGRES_HOST
+              value: "postgresql"
+            - name: POSTGRES_PORT
+              value: "5432"
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h $POSTGRES_HOST  -p  $POSTGRES_PORT; 
+              do echo waiting for database; sleep 2; done;
+      containers:
+      - name: post-install-job
+        env:
+          - name: DB_HOST
+            value: "postgresql:5432"
+          - name: DB_USER
+            value: "user"
+          - name: DB_PASSWORD
+            value: "p@55w0rd"
+          - name: DB_BASE
+            value: "lesson5"      
+      
+        image: "bpsnifer/lesson-5-hw-users:v1"
+        command:
+          - /app
+          - "-migrate=true"
+  backoffLimit: 0
