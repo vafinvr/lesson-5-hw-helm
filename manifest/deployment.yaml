@@ -14,9 +14,21 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: users
-      annotations:
-        checksum/config: f936ff1b07449954bf047120beeea18df8be64378094a628043a44857961221d
     spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:latest
+          envFrom:
+          - configMapRef:
+              name: users-config
+          - secretRef:
+              name: users-secret
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h ${DB_HOST%%:*} -p ${DB_HOST##*:}; 
+              do echo waiting for database; sleep 2; done;
       containers:
         - name: users
           image: "bpsnifer/lesson-5-hw-users:v1"
@@ -25,13 +37,13 @@ spec:
               containerPort: 8080
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
             httpGet:
               path: /health
               port: srvport
           readinessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
             httpGet:
               path: /health
