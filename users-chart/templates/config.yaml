@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: users-config
+  name: {{ include "users-chart.fullname" . }}-config
 data:
   LISTEN_ADDR: {{ printf ":%s" .Values.service.port }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: users-secret
+  name: {{ include "users-chart.fullname" . }}-secret
 type: Opaque
 data:
   DB_HOST: {{ printf "%s:%s" (include "postgresql.fullname" .) .Values.postgresql.service.port | b64enc | quote }}

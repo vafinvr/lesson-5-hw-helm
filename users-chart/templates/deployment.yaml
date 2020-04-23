@@ -16,6 +16,20 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:latest
+          envFrom:
+          - configMapRef:
+              name: {{ include "users-chart.fullname" . }}-config
+          - secretRef:
+              name: {{ include "users-chart.fullname" . }}-secret
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h ${DB_HOST%%:*} -p ${DB_HOST##*:}; 
+              do echo waiting for database; sleep 2; done;
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
@@ -24,19 +38,19 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
             httpGet:
               path: /health
               port: srvport
           readinessProbe:
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
             httpGet:
               path: /health
               port: srvport
           envFrom:
           - configMapRef:
-              name: users-config
+              name: {{ include "users-chart.fullname" . }}-config
           - secretRef:
-              name: users-secret
+              name: {{ include "users-chart.fullname" . }}-secret
